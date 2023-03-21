@@ -5,7 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 
 # Create your views here.
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login,logout
 from .forms import LoginForm,CreateUserForm
 from .models import Users
 
@@ -51,3 +51,7 @@ def register_user(request):
 
 
     return render(request, "accounts/register.html", {"form": form})
+
+def Logout(request):
+    logout(request)
+    return redirect('login')
