@@ -8,7 +8,7 @@ from django.db import models
 # Create your models here.
 class Users(models.Model):
     aid = models.BigIntegerField(primary_key=True,blank=True)
-    name = models.CharField(max_length=60)
+    name = models.CharField(max_length=60,blank=True)
     username= models.CharField(max_length=60,blank=True)
     score = models.BigIntegerField(default=0)
     password = models.TextField(max_length=200)

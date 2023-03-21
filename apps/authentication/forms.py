@@ -5,7 +5,7 @@ Copyright (c) 2019 - present AppSeed.us
 
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from authentication.models import Users
+from .models import Users
 
 
 class LoginForm(forms.Form):
@@ -25,7 +25,7 @@ class LoginForm(forms.Form):
         ))
 
 
-class SignUpForm(UserCreationForm):
+class SignUpForm(forms.Form):
     username = forms.CharField(
         widget=forms.TextInput(
             attrs={
