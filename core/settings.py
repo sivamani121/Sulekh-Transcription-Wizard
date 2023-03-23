@@ -26,11 +26,13 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.humanize' ,
+    'apps.home.templatetags',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.home',  # Enable the inner home (home)
-    'apps.authentication'
+    'apps.authentication',
 ]
 
 MIDDLEWARE = [
@@ -71,9 +73,12 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
+      'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'epics',
+        'USER':'postgres',
+        'PASSWORD':'#@12sivasiva',
+        'HOST':'localhost'
     }
 }
 
@@ -121,6 +126,6 @@ STATICFILES_DIRS = (
     os.path.join(CORE_DIR, 'apps/static'),
 )
 
-
+AUTH_USER_MODEL = 'authentication.User'
 #############################################################
 #############################################################

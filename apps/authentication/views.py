@@ -7,7 +7,7 @@ Copyright (c) 2019 - present AppSeed.us
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login,logout
 from .forms import LoginForm,CreateUserForm
-from .models import Users
+from .models import  User
 
 
 def login_view(request):
@@ -21,14 +21,16 @@ def login_view(request):
         if form.is_valid():
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
-            user = authenticate(request,username=username, password=password)
+           
+            user= User.objects.all().filter(username=username,password=password).first()
+            print(user)
             print(username, password)
             if user is not None:
                 login(request, user)
-                y = Users.objects.all().filter(username=username,password=password).first()
+                
                 request.session['user_id'] = user.id
-                request.session['users_id'] = y.id
                 return redirect("/")
+                
             else:
                 msg = 'Invalid credentials'
         else:
@@ -38,19 +40,31 @@ def login_view(request):
 
 
 def register_user(request):
+    msg=""
     form = CreateUserForm()
     if request.method == 'POST':
-        username = request.POST.get('username')
+        userna = request.POST.get('username')
+        if len(User.objects.all().filter(username=userna)) > 0:
+            
+            return render(request, "accounts/register.html", {"form": form,'msg':'username used '})
+        
         password = request.POST.get('password1')
         email = request.POST.get('email')
+        password2=request.POST.get('password2')
+        if password!=password2:
+             return render(request, "accounts/register.html", {"form": form,'msg':"password doesn't match"})
+
         response = CreateUserForm(request.POST)
         if response.is_valid():
-            y = Users(username=username, password=password, email=email)
+            y = User(username=userna, password=password, email=email)
             y.save()
-            response.save()
+            # response.save()
+            msg = 'User created - please <a href="/login">login</a>.'
+            success = True
 
 
-    return render(request, "accounts/register.html", {"form": form})
+
+    return render(request, "accounts/register.html", {"form": form,'msg':msg,'success':success})
 
 def Logout(request):
     logout(request)
