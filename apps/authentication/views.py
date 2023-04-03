@@ -8,8 +8,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login,logout
 from .forms import LoginForm,CreateUserForm
 from .models import  User
-
-
+from apps.home.models import Sentence,Assigned
+from django.db.models import Max
 def login_view(request):
 
     form = LoginForm(request.POST or None)
@@ -27,7 +27,10 @@ def login_view(request):
             print(username, password)
             if user is not None:
                 login(request, user)
-                
+                if user.lowerb == user.upperb:
+                    user.lowerb=Assigned.objects.aggregate(Max('upper'))['upper__max']
+                    user.upperb= min(user.lower+50,Sentence.objects.aggregate(Max('id'))['id__max'])
+                    user.save()
                 request.session['user_id'] = user.id
                 return redirect("/")
                 

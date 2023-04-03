@@ -79,6 +79,12 @@ DATABASES = {
         'USER':'postgres',
         'PASSWORD':'#@12sivasiva',
         'HOST':'localhost'
+        #  'ENGINE': 'django.db.backends.mysql',
+        # 'NAME': 'epics',
+        # 'USER': 'root',
+        # 'PASSWORD': '#@12sivasiva',
+        # 'HOST': 'localhost',
+        # 'PORT': '',
     }
 }
 

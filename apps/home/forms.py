@@ -27,3 +27,7 @@ class Anno(forms.Form):
         choices=CHOICES, 
     )
     textinp = forms.CharField( max_length=50, required=False)
+# class UploadExcel(forms.Form):
+
+class ExcelUploadForm(forms.Form):
+    excel_file = forms.FileField(label='Select an Excel file')

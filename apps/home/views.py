@@ -8,34 +8,35 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
-from .models import Sentence,Answered,sent_req
+from .models import Sentence,Answered,sent_req,Confirmed
 from apps.authentication.models import User
 from django.shortcuts import render, redirect
-from .forms import AskForm,Anno
+from .forms import AskForm,Anno,ExcelUploadForm
 from ai4bharat.transliteration import XlitEngine
 from datetime import datetime
+import pandas as pd
 e = XlitEngine("hi", beam_width=10, rescore=True)
 
-# def savesent(request):
-#     # # from ai4bharat.transliteration import XlitEngine
-#     # f=open('apps/static/file.txt','r',encoding='utf-8')
-#     # s=f.read()
-#     # s=c=list(s.strip().split("\n\n"))
-#     # for i in range(len(s)):
-#     #     s[i]=list(s[i].strip().split('\n'))
-#     # for i in range(len(s)):
-#     #     for j in range(len(s[i])):
-#     #         s[i][j]=list(s[i][j].strip().split('\t'))
-#     #         s[i][j][2]=list(s[i][j][2].strip().split(','))
-#     # for i in s:
-#     #     s=""
-#     #     t=""
-#     #     for j in i:
-#     #         s+=" "+j[0]
-#     #         t+=j[1]
-#     #     y=Sentence(words=s.strip(),tags=t.strip())
-#     #     y.save()
-#     return render(request,'home/index.html')
+def savesent(request):
+    # from ai4bharat.transliteration import XlitEngine
+    f=open('apps/static/file.txt','r',encoding='utf-8')
+    s=f.read()
+    s=c=list(s.strip().split("\n\n"))
+    for i in range(len(s)):
+        s[i]=list(s[i].strip().split('\n'))
+    for i in range(len(s)):
+        for j in range(len(s[i])):
+            s[i][j]=list(s[i][j].strip().split('\t'))
+            s[i][j][2]=list(s[i][j][2].strip().split(','))
+    for i in s:
+        s=""
+        t=""
+        for j in i:
+            s+=" "+j[0]
+            t+=j[1]
+        y=Sentence(words=s.strip(),tags=t.strip())
+        y.save()
+    return render(request,'home/index.html')
 
 @login_required(login_url="/login/")
 def index(request):
@@ -227,23 +228,16 @@ def anno(request):
 @login_required(login_url="/login/")
 def ask_us(request):
     msg=""
-    form = AskForm()
+    form = ExcelUploadForm()
     if request.method =='POST':
-        response = AskForm(request.POST)
-        print("you somehow did --------------------")
-        print(response)
-        
-        quest = Sentence(words=request.POST.get('sentence'),tags=request.POST.get('tags'))
-        quest.save()
-        print(quest.id)
-        msg="question sbmited successfully check frequently for answer "
-        uid= request.session['user_id']
-        user = User.objects.filter(id=uid)[0]
-        sentr = sent_req(sentence=quest,user=user)
-        sentr.save()
+        form = ExcelUploadForm(request.POST, request.FILES)
         # return HttpResponse.''.render(context, request))
-
-
+        print('hi')
+        if form.is_valid():
+            # read the uploaded Excel file using pandas
+            df = pd.read_excel(request.FILES['excel_file'])
+            print(df)
+            
 
     context = {}
     
@@ -329,9 +323,10 @@ def confirm(request):
             uid= request.session['user_id']
             user = User.objects.filter(id=uid)[0]
             newans= Answered.objects.filter(sentno=sent).first()
-            newans.updatedate=datetime.now
+            newans.updatedate=datetime.now()
             newans.save()
-        
+            conf=Confirmed(csent=sent,cuser=newans.userid)
+            conf.save()
     load_template = request.path.split('/')[-1]
 
    

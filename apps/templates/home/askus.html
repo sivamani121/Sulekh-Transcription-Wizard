@@ -14,7 +14,7 @@
 {% block content %}
 {% load humanize %}
 <div class="container-fluid mt--12">
-  <form action="" method="POST">
+  <form action="" method="POST" enctype="multipart/form-data">
   <div class="row" style="align-items:center;justify-content:center;" >
     <div class="col-xl-9">
   {% csrf_token %}
@@ -24,21 +24,13 @@
   
   <tbody>
    
-    <tr>
-      <th scope="row">
-        Sentence
-      </th>
-      <td>
-        {{ form.sentence }}
-      </td>
-      
-    </tr>
+    
     <tr>
       <th scope="row">
         Tags
       </th>
       <td >
-        {{ form.tags }}
+        {{ form }}
       </td>
       
     </tr>

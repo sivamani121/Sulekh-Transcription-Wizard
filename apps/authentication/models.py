@@ -14,6 +14,8 @@ class User(AbstractUser):
     email = models.CharField(max_length=70,blank=True)
     tag = models.IntegerField(default=0)
     about = models.TextField(null=True,blank=True)
+    lowerb=models.IntegerField(default=0)
+    upperb=models.IntegerField(default=0)
     def _str_(self) -> str:
         t= str(self.id)+"  "+self.name
         return t
