@@ -22,5 +22,8 @@ class Answered(models.Model):
   sentno = models.ForeignKey(Sentence,on_delete=models.CASCADE)
   userid = models.ForeignKey(User,on_delete=models.DO_NOTHING)
   updatedate = models.DateTimeField(default=datetime.now,blank=True)
+class sent_req(models.Model):
+  sentence = models.ForeignKey(Sentence,on_delete=models.CASCADE)
+  user = models.ForeignKey(User,on_delete=models.CASCADE)
  
   

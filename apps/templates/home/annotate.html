@@ -1,11 +1,12 @@
 {% extends 'layouts/base.html' %}
 {% load index_filter %}
 {% block stylesheets %}
-<style type="text/css">
+<style >
+  
   #id_1{
     width:100px;
   }
-.my-sent{
+.my-sent
   { display: flex;
     justify-content: center;
     align-items: center;
@@ -14,21 +15,38 @@
  
   display:inline-block;
 }
-}
+
+
+  
+  
   
   </style>
+
+  <style>
+    .table-container {
+      max-height: 78vh; /* set the maximum height of the container */
+      overflow-y: scroll; /* enable vertical scrolling */
+    }
+    
+    /* Optional: to hide horizontal scrollbar */
+    .table-container::-webkit-scrollbar {
+      display: none;
+    }
+    </style>
+    
 {% endblock stylesheets %}
 {% block title %} Tables {% endblock title %}
 
 {% block content %}
 <meta charset="UTF-8">
-  <div class="header bg-primary pb-6">
-    
-  </div>
+  
   
   <!-- Page content -->
   <div class="container-fluid mt--6">
     <div class="row">
+      {% if sentence != None %}
+      <form action="" method="POST" id="my-form">
+        {% csrf_token %}
       <div class="col">
         <div class="card">
           <!-- Card header -->
@@ -44,7 +62,8 @@
           </div>
         </div>
           <!-- word  table -->
-          <div class="table-responsive">
+          
+          <div class="table-container">
             <table class="table align-items-center table-flush">
               <thead class="thead-light">
                 <tr>
@@ -70,114 +89,124 @@
                   </th>
                   <td> {{ tags|index_filter:i}} </td>
                   {%if tags|index_filter:i == 'E' %}
-
+                  <td>
+                  <div class='container'>
+                    <div  class='row'>
+                      english word
+                    </div>
+                  </div>
+                </td>
                   {% else %}
                   <td>
 
                     <div class='container'>
                     <div  class='row'>
-                    <div class="form-check col-sm-3 col-md-2 col-lg-2">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        word
+                      {% for j in wordsh|index_filter:i %}
+                    <div class="form-check col-sm-3 col-md-2 col-lg-">
+                      
+                      <label class="form-check-label" for="flexRadioDefault{{i}}">
+                        <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}"  value= {{j}} required> {{ j }}
                       </label>
                     </div>
-                    <div class="form-check col-sm-3 col-md-2 col-lg-2">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        word
-                      </label>
-                    </div>
-                    <div class="form-check col-sm-3 col-md-2 col-lg-2">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        word
-                      </label>
-                    </div>
-                    <div class="form-check col-sm-3 col-md-2 col-lg-2">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        word
-                      </label>
-                    </div>
-                    <div class="form-check col-sm-3 col-md-2 col-lg-2">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        word
-                      </label>
-                    </div>
-                    <div class="form-check col-sm-3 col-md-2 col-lg-2">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        word
-                      </label>
-                    </div>
-                    <div class="form-check col-sm-3 col-md-2 col-lg-2">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        word
-                      </label>
-                    </div>
-                    <div class="form-check col-sm-3 col-md-2 col-lg-2 ">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        word
-                      </label>
-                    </div>
-                    <div class="form-check col-sm-3 col-md-2 col-lg-2">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        word
-                      </label>
-                    </div>
-                    <div class="form-check col-sm-3 col-md-2 col-lg-2">
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                      <label class="form-check-label" for="flexRadioDefault1">
-                        word
-                      </label>
-                    </div>
+                    {% endfor %}
+                    
 
                 
                 
-                    <div class="form-group mx-sm-3 mb-2" style="color:black;">
+                    <div class="form-check col-sm-12 col-md-12 col-lg-12" style="color:black;">
                       
-                      <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+                      <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}"  value= '11' required>
+                      <script> CreateHindiTextBox("id_"+{{i}});</script>
                       
-                      <script language="javascript">
-                        CreateHindiTextBox("id_1");
-                     </script>
                     </div>
 
-                      
+                    
                   </td>
                   {% endif %}
                 </tr>
                 {% endfor %}
             
 
-
               </div>
-              </tbody>
-            </table>
-
-
-          </div>
+            </tbody>
+          </table>
+        {% comment %} </div> {% endcomment %}
           
-        </div>
-        <div style="display:flex; justify-content: space-between;">
-        <button class="btn btn-primary" style="background-color:#868e96; border:0px;" type="submit">Previous</button>
-        <span>
-        <button class="btn btn-primary" style="background-color:#868e96; border:0px;" type="submit">Skip</button>
-        <button class="btn btn-primary" type="submit">save&amp;next</button></span></div>
+          
+        
       </div>
+      </div>
+      <div style="display:flex; justify-content: space-between;">
+        <input class="form-check-input" type="text" name="skipped"  value= '0' id="skipper" style="display:none;">
+        <button class="btn btn-primary" style="background-color:#868e96; border:0px;" type="Previous">Previous</button>
+        <span>
+          <button class="btn btn-primary" style="background-color:#868e96; border:0px;" type="button" onclick="skipForm()">skip</button>
+          <button class="btn btn-primary" type="submit">save&amp;next</button></span></div>
+        </div>
+      </div>
+      <ul>
+    </form>
+    {% else %}
+    <div class="my-sent col-sm-12 " style="height:500px; display: flex; align-items: center; justify-content: center;" >
+      <p> no sentence to annotate </p>
+      </div>
+    {% endif %}
+    
     </div>
-    <ul>
-      
-    {% include "includes/footer.html" %}
-
   </div>
 
 {% endblock content %}
 <script src="https://hinkhoj.com/common/js/keyboard.js"></script>
 <!-- Specific JS goes HERE --> 
-{% block javascripts %} {% endblock javascripts %}
+{% block javascripts %} 
+<script>
+  function CreateHindiTextBox(id) {
+    // create the custom text box element
+    var textBox = document.createElement("textarea");
+    textBox.setAttribute("id", id);
+
+    // add an event listener to capture the value of the text box when the form is submitted
+    var form = document.getElementById("myForm");
+    form.addEventListener("submit", function(event) {
+      event.preventDefault(); // prevent the form from submitting
+      var radioButtonValue = document.querySelector('input[name="flexRadioDefault"]:checked').value;
+      if (radioButtonValue === "option2") {
+        var textBoxValue = textBox.value;
+        sendDataToServer(textBoxValue); // send the data to the server-side
+      } else {
+        form.submit(); // submit the form without the custom text box value
+      }
+    });
+
+    // add the custom text box element to the form
+    form.appendChild(textBox);
+  }
+
+  function sendDataToServer(data) {
+    // send the data to the server-side using an HTTP request
+    // you can use the fetch() API or an AJAX library like jQuery to make the request
+    // for example:
+    fetch('/my_view/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ 'myCustomTextBox': data })
+    });
+  }
+
+  // call the CreateHindiTextBox function to create the custom text box
+ 
+</script>
+<script>
+  const form = document.querySelector('#my-form');
+  const skipbtn = document.querySelector('#skipper');
+  function skipForm() {
+    skipbtn.value='1';
+    alert('are u sure ?');
+    
+    form.submit()
+  }
+  </script>
+
+{% endblock javascripts %}

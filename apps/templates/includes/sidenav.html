@@ -19,27 +19,34 @@
           </li>
           {% if request.user.tag > 1 %}
           <li class="nav-item">
-            <a class="nav-link {% if 'annotate' in segment %} active {% endif %}" href="/confirm.html">
+            <a class="nav-link {% if 'confirm' in segment %} active {% endif %}" href="/confirm.html">
               <i class="ni ni-check-bold text-green"></i>
-              <span class="nav-link-text">Confirm</span>
+              <span class="nav-link-text">Finalize </span>
             </a>
           </li>
           {% endif %}
           {% if request.user.tag > 0 %}
           <li class="nav-item">
-            <a class="nav-link {% if 'annotate' in segment %} active {% endif %}" href="/verify.html">
+            <a class="nav-link {% if 'verify' in segment %} active {% endif %}" href="/verify.html">
               <i class="ni ni-like-2 text-primary"></i>
-              <span class="nav-link-text">Verify</span>
+              <span class="nav-link-text">verify</span>
             </a>
           </li>
           {% endif %}
+          {% if request.user.tag >= 0 %}
           <li class="nav-item">
             <a class="nav-link {% if 'annotate' in segment %} active {% endif %}" href="/annotate.html">
               <i class="ni ni-tag text-orange"></i>
               <span class="nav-link-text">Annotate</span>
             </a>
           </li>
-          
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link {% if 'ask' in segment %} active {% endif %}" href="/askus.html">
+              <i class="ni ni-tag text-orange"></i>
+              <span class="nav-link-text">Ask Us</span>
+            </a>
+          </li>
           
           <li class="nav-item">
             <a class="nav-link {% if 'profile' in segment %} active {% endif %}" href="/profile.html">

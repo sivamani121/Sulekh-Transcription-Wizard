@@ -1,0 +1,134 @@
+{% extends 'layouts/base.html' %}
+{% load index_filter %}
+{% block stylesheets %}
+<style>
+  .special{
+    display:inline-block;
+    width:700px;
+    
+  }
+  
+  </style>
+{% endblock stylesheets %}
+{% block title %} Tables {% endblock title %}
+{% block content %}
+{% load humanize %}
+<div class="container-fluid mt--12">
+  <form action="" method="POST">
+  <div class="row" style="align-items:center;justify-content:center;" >
+    <div class="col-xl-9">
+  {% csrf_token %}
+<div class="table-responsive">
+<!-- Projects table -->
+<table class="table align-items-center table-flush">
+  
+  <tbody>
+   
+    <tr>
+      <th scope="row">
+        Sentence
+      </th>
+      <td>
+        {{ form.sentence }}
+      </td>
+      
+    </tr>
+    <tr>
+      <th scope="row">
+        Tags
+      </th>
+      <td >
+        {{ form.tags }}
+      </td>
+      
+    </tr>
+   
+  </tbody>
+
+</table>
+</div>
+</div>
+
+
+</div>
+</div>
+<div class="row" style="align-items:center;justify-content:center;" >
+  <div class="col-xl-2">
+<button type="submit" class="btn btn-primary mt-4" >submit</button>
+  </div>
+</div>
+<div class="row" style="align-items:center;justify-content:center; margin-top:30px;margin-bottom:30px;" >
+  <div class="col-xl-5" >
+{% if msg %}
+<small>{{ msg | safe }}</small>
+  {% endif %}
+  </div>
+</div>
+</form>
+<div class="row" style="align-items:center;justify-content:center;" >
+  <div class="col-xl-11" style="height: 120%;">
+    <div class="card">
+      <div class="card-header border-0">
+        <div class="row align-items-center">
+          <div class="col">
+            <h3 class="mb-0">Recent activity</h3>
+          </div>
+          <div class="col text-right">
+            <a href="#!" class="btn btn-sm btn-primary">See all</a>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <!-- Projects table -->
+        <table class="table align-items-center table-flush">
+          <thead class="thead-light">
+            <tr>
+              
+              <th scope="col">Sentence</th>
+              <th scope="col">Answer</th>
+              <th scope="col">Status</th>
+              <th scope="col">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in queries %}
+            <tr>
+              
+              <td>
+                {{ i.sentence.words }}
+              </td>
+              <td>
+
+                {{ i.sentence.meaning }}
+              </td>
+              <td>
+                {% if i.sentence.status == 0 %}
+                Yet to be answered
+                {% elif i.sentence.status == 1 %}
+                  Annotated
+                {% elif i.sentence.status == 2%}
+                Verified
+                {% else %}
+                Confirmed 
+                {% endif %}
+
+              </td>
+              <td>
+                {{ i.sentence.updatedate | timesince }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+</div>
+  
+</div>
+
+{% endblock content %}
+<script src="https://hinkhoj.com/common/js/keyboard.js"></script>
+<!-- Specific JS goes HERE --> 
+{% block javascripts %} {% endblock javascripts %}

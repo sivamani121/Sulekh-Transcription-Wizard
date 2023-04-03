@@ -4,7 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 from django.urls import path, re_path
-from apps.home import views
+from apps.home import views 
 
 urlpatterns = [
 
@@ -12,6 +12,10 @@ urlpatterns = [
     path('', views.index, name='home'),
 
     # Matches any html file
-    re_path(r'^.*\.*', views.pages, name='pages'),
-
+    re_path('annotate', views.anno, name='annotate'),
+    re_path('verify', views.verify, name='verify'),
+    re_path('confirm', views.confirm, name='confirm'),
+    re_path('askus', views.ask_us, name='askus'),
+    re_path('profile', views.Proview, name='profile'),
+    # re_path('annotat', views.savesent, name='savesent'),
 ]

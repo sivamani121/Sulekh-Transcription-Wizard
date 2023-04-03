@@ -22,7 +22,7 @@ def login_view(request):
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
            
-            user= User.objects.all().filter(username=username,password=password).first()
+            user = authenticate(request,username=username, password=password)
             print(user)
             print(username, password)
             if user is not None:
@@ -41,6 +41,8 @@ def login_view(request):
 
 def register_user(request):
     msg=""
+    form =None
+    success=False
     form = CreateUserForm()
     if request.method == 'POST':
         userna = request.POST.get('username')
@@ -56,11 +58,13 @@ def register_user(request):
 
         response = CreateUserForm(request.POST)
         if response.is_valid():
-            y = User(username=userna, password=password, email=email)
-            y.save()
-            # response.save()
+            user = User.objects.create_user(username=userna,password=password,email=email)
+            user.save()
+            
             msg = 'User created - please <a href="/login">login</a>.'
             success = True
+        else:
+            form = CreateUserForm()
 
 
 
