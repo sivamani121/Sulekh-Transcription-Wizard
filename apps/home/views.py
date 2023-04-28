@@ -490,6 +490,7 @@ def verify(request):
             context['n']=range(n)
             context['utag']=None
             context['form']=None
+            context['marks']=None
             request.session['qid']=None
             html_template = loader.get_template('home/' + load_template)
             print(html_template)
@@ -516,10 +517,15 @@ def verify(request):
         for i in words:
             out = e.translit_word(i, topk=10)
             wordsh.append(list(out.values())[0])
-            
+        marks=[]
         context['wordsh']=wordsh
-
-
+        for i in range(len(wordsh)):
+            t=11
+            for j in range(10):
+                if wordsh[i][j]==ans[i]:
+                    t=j
+            marks.append(t)
+        context['marks']=marks
         # print(wordsh)
 
     html_template = loader.get_template('home/' + load_template)

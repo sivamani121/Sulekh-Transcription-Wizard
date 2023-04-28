@@ -95,7 +95,7 @@
                     <div class="form-check col-sm-3 col-md-2 col-lg-2">
                       
                       <label class="form-check-label" for="flexRadioDefault{{i}}">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}"  value= {{j}}  {% if j == ans|index_filter:i %} checked {% endif %} required> {{ j }}
+                        <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}"  value= {{j}}  {% if j == ans|index_filter:i %} checked {% endif %} required> {{ j }} 
                       </label>
                     </div>
                     {% endfor %}
@@ -105,12 +105,20 @@
                 
                     <div class="form-check col-sm-12 col-md-12 col-lg-12" style="color:black;">
                       
-                      <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}"  value= '11' required>
-                      <script> CreateHindiTextBox("id_"+{{i}});</script>
-                      
+                      <input class="form-check-input" type="radio" name="flexRadioDefault{{i}}"  value= '11' required {% if marks|index_filter:i == 11 %} checked {% endif %} > 
+        
+                      <script> CreateHindiTextBox("id_"+{{i}}); </script>
+                        
+                        {% if marks|index_filter:i == 11 %} 
+                        <script>
+                            document.getElementById("id_{{i}}").value = "{{ ans|index_filter:i }}";
+                            alert(document.getElementById("id_{{i}}").value);
+                        </script>
+                        {% endif %}
                     </div>
-
-                      
+                    {% if marks|index_filter:i == 11 %}
+                    
+                    {% endif %}
                   </td>
                   {% endif %}
                 </tr>
