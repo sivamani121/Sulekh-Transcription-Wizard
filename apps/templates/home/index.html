@@ -1,170 +1,175 @@
-{% extends 'layouts/base.html' %}
-
-{% block title %} Dashboard {% endblock title %}
+{% extends 'layouts/base.html' %} {% block title %} Dashboard 
+{% endblock title %}
 
 <!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}{% endblock stylesheets %} {% block content %} {% load humanize %}
 
-{% block content %}
-{% load humanize %}
-
-    <!-- Header -->
-    <div class="header bg-primary pb-6">
-      <div class="container-fluid">
-        <div class="header-body">
-          <div class="row align-items-center py-4">
-            {% comment %} <div class="col-lg-6 col-7">
-              <h6 class="h2 text-white d-inline-block mb-0">Default</h6>
-              <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
-                <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-                  <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
-                  <li class="breadcrumb-item"><a href="#">Dashboards</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">Default</li>
-                </ol>
-              </nav>
-            </div> {% endcomment %}
-            
-          </div>
-          <!-- Card stats -->
-          <div class="row" style="gap:10%;">
-            <div class="col-xl-3 col-md-6">
-              <div class="card card-stats">
-                <!-- Card body -->
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col">
-                      <h5 class="card-title text-uppercase text-muted mb-0">total finalised</h5>
-                      <span class="h2 font-weight-bold mb-0">25.60%</span>
-                    </div>
-                    <div class="col-auto">
-                      <div class="icon icon-shape bg-gradient-red text-white rounded-circle shadow">
-                        <i class="ni ni-active-40"></i>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-md-6">
-              <div class="card card-stats">
-                <!-- Card body -->
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col">
-                      <h5 class="card-title text-uppercase text-muted mb-0">total verified</h5>
-                      <span class="h2 font-weight-bold mb-0">35.75%</span>
-                    </div>
-                    <div class="col-auto">
-                      <div class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow">
-                        <i class="ni ni-chart-pie-35"></i>
-                      </div>
-                    </div>
-                  </div>
-                  
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6">
-              <div class="card card-stats">
-                <!-- Card body -->
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col">
-                      <h5 class="card-title text-uppercase text-muted mb-0">total annotated</h5>
-                      <span class="h2 font-weight-bold mb-0">49.65%</span>
-                    </div>
-                    <div class="col-auto">
-                      <div class="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
-                        <i class="ni ni-chart-bar-32"></i>
-                      </div>
-                    </div>
-                  </div>
-                  
-                </div>
-              </div>
-            </div>
-          </div>
+<!-- Header -->
+<div class="header bg-primary pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        {% comment %}
+        <div class="col-lg-6 col-7">
+          <h6 class="h2 text-white d-inline-block mb-0">Default</h6>
+          <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+              <li class="breadcrumb-item">
+                <a href="#"><i class="fas fa-home"></i></a>
+              </li>
+              <li class="breadcrumb-item"><a href="#">Dashboards</a></li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Default
+              </li>
+            </ol>
+          </nav>
         </div>
+        {% endcomment %}
       </div>
-    </div>
-
-    <!-- Page content -->
-    <div class="container-fluid mt--6">
-      <div class="row">
-        
-        
-      </div>
-      <div class="row">
-        <div class="col-xl-12" style="height: 120%;">
-          <div class="card">
-            <div class="card-header border-0">
-              <div class="row align-items-center">
+      <!-- Card stats -->
+      <div class="row" style="gap: 10%">
+        <div class="col-xl-3 col-md-6">
+          <div class="card card-stats">
+            <!-- Card body -->
+            <div class="card-body">
+              <div class="row">
                 <div class="col">
-                  <h3 class="mb-0">Recent activity</h3>
+                  <h5 class="card-title text-uppercase text-muted mb-0">
+                    total finalised
+                  </h5>
+                  <span class="h2 font-weight-bold mb-0">25.60%</span>
                 </div>
-                
+                <div class="col-auto">
+                  <div
+                    class="icon icon-shape bg-gradient-red text-white rounded-circle shadow"
+                  >
+                    <i class="ni ni-active-40"></i>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="table-responsive">
-              <!-- Projects table -->
-              <table class="table align-items-center table-flush">
-                <thead class="thead-light">
-                  <tr>
-                    <th scope="col">User name</th>
-                    <th scope="col">Sentence</th>
-                    <th scope="col">Answer</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for sent in sents %}
-                  <tr>
-                    <th scope="row">
-                      {{ sent.userid.username }}
-                    </th>
-                    <td>
-                      {{ sent.sentno.words }}
-                    </td>
-                    <td>
-
-                      {{ sent.sentno.meaning }}
-                    </td>
-                    <td>
-                      {% if sent.sentno.status == 1 %}
-                        Annotated
-                      {% elif sent.sentno.status == 2%}
-                      Verified
-                      {% else %}
-                      Confirmed 
-                      {% endif %}
-
-                    </td>
-                    <td>
-                      {{ sent.updatedate | timesince }}
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
             </div>
           </div>
         </div>
-        
+        <div class="col-xl-3 col-md-6">
+          <div class="card card-stats">
+            <!-- Card body -->
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">
+                    total verified
+                  </h5>
+                  <span class="h2 font-weight-bold mb-0">35.75%</span>
+                </div>
+                <div class="col-auto">
+                  <div
+                    class="icon icon-shape bg-gradient-orange text-white rounded-circle shadow"
+                  >
+                    <i class="ni ni-chart-pie-35"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+          <div class="card card-stats">
+            <!-- Card body -->
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5 class="card-title text-uppercase text-muted mb-0">
+                    total annotated
+                  </h5>
+                  <span class="h2 font-weight-bold mb-0">49.65%</span>
+                </div>
+                <div class="col-auto">
+                  <div
+                    class="icon icon-shape bg-gradient-info text-white rounded-circle shadow"
+                  >
+                    <i class="ni ni-chart-bar-32"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-
-      {% include "includes/footer.html" %}
-
     </div>
+  </div>
+</div>
+
+<!-- Page content -->
+<div class="container-fluid mt--6">
+  <div class="row"></div>
+  <div class="row">
+    <div class="col-xl-12" style="height: 120%">
+      <div class="card">
+        <div class="card-header border-0">
+          <div class="row align-items-center">
+            <div class="col">
+              <h3 class="mb-0">Recent activity</h3>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <!-- Projects table -->
+          <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">User name</th>
+                <th scope="col">Sentence</th>
+                <th scope="col">Answer</th>
+                <th scope="col">Status</th>
+                <th scope="col">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for sent in sents %}
+              <tr>
+                <th scope="row">{{ sent.userid.username }}</th>
+                <td>{{ sent.sentno.words }}</td>
+                <td>{{ sent.sentno.meaning }}</td>
+                <td>
+                  {% if sent.sentno.status == 1 %} Annotated 
+                  {% elif sent.sentno.status == 2%} Verified {% else %} Confirmed 
+                  {% endif %}
+                </td>
+                <td>{{ sent.updatedate | timesince }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% include "includes/footer.html" %}
+</div>
 
 {% endblock content %}
 
-<!-- Specific JS goes HERE --> 
+<!-- Specific JS goes HERE -->
 {% block javascripts %}
 
-  <script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
-  <script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
+<script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
+<script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
+<script>
+  window.addEventListener("beforeunload", function (event) {
+    // Send the logout request here
+    // For example, using fetch:
+    fetch("logout/", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "X-CSRFToken": csrfToken
+      }
+    });
+  });
+  
+</script>
+
 
 {% endblock javascripts %}

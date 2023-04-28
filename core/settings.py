@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.home',  # Enable the inner home (home)
     'apps.authentication',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,7 @@ STATICFILES_DIRS = (
 AUTH_USER_MODEL = 'authentication.User'
 #############################################################
 #############################################################
+# GRAPH_MODELS ={
+# 'all_applications': True,
+# 'graph_models': True,
+# }

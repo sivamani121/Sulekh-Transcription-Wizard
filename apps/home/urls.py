@@ -17,5 +17,7 @@ urlpatterns = [
     re_path('confirm', views.confirm, name='confirm'),
     re_path('askus', views.ask_us, name='askus'),
     re_path('profile', views.Proview, name='profile'),
+
+    # re_path('users',views. user_list, name='user_list'),
     # re_path('annotat', views.savesent, name='savesent'),
 ]

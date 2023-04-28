@@ -31,3 +31,9 @@ class Anno(forms.Form):
 
 class ExcelUploadForm(forms.Form):
     excel_file = forms.FileField(label='Select an Excel file')
+    datasetname = forms.CharField(max_length=1000)
+class TaskChangeForm(forms.Form):
+    users = User.objects.all()
+    user_id = forms.ModelChoiceField(queryset=users)
+    tasks = [('Task 1', 'Task 1'), ('Task 2', 'Task 2'), ('Task 3', 'Task 3')]
+    lowerbound = forms.IntegerField

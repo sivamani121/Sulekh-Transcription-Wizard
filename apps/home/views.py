@@ -8,13 +8,18 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
-from .models import Sentence,Answered,sent_req,Confirmed
+from .models import Sentence,Answered,sent_req,Confirmed,DataSets,Annotated,Verified
 from apps.authentication.models import User
 from django.shortcuts import render, redirect
 from .forms import AskForm,Anno,ExcelUploadForm
 from ai4bharat.transliteration import XlitEngine
-from datetime import datetime
+from datetime import datetime, timezone
 import pandas as pd
+from django.db.models import Q
+from django.db.models import Max
+from .forms import TaskChangeForm
+import threading
+import time
 e = XlitEngine("hi", beam_width=10, rescore=True)
 
 def savesent(request):
@@ -122,7 +127,6 @@ def pages(request):
     #     return HttpResponse(html_template.render(context, request))
 
 
-
 @login_required(login_url="/login/")
 def anno(request):
     print(request)
@@ -142,16 +146,21 @@ def anno(request):
             user.score=sent.id
             user.save()
         else:
-            words= list(sent.words.split(' '))
+            words= sent.words
+            words=list(words.strip().split())
+            print(words)
             tags= sent.tags
+            tags=tags.strip()
             ans=""
             for i in range(len(tags)):
                 if i!=0:
                     ans+=" "
-                if tags[i] == 'E':
+                if tags[i].upper() != 'H':
+                    print(tags[i])
                     ans+=words[i]
+                    print(words[i])
                 elif response.get(f"flexRadioDefault{i}")=='11':
-                    print(response.get(f"id_{i}"))
+                    # print(response.get(f"id_{i}"))
                     ans+=response.get(f"id_{i}")
                 else:
                     ans+=response.get(f"flexRadioDefault{i}")
@@ -163,6 +172,10 @@ def anno(request):
             user = User.objects.filter(id=uid)[0]
             newans= Answered(sentno=sent,userid=user)
             newans.save()
+            annoted=Annotated(asent=sent,auser=user)
+            annoted.save()
+        sent.lock=False
+        sent.save()
            
         
     load_template = request.path.split('/')[-1]
@@ -173,13 +186,13 @@ def anno(request):
     
         
     if(user.tag>=0 ):
-        sent = Sentence.objects.all().filter(status=0,id__gt=user.score)
-        print(sent)
+        sent = Sentence.objects.all().filter(status=0,id__gt=user.score,lock=False)
+        # print(sent)
         if len(sent)==0:
             user.score=0
             user.save
-            sent = Sentence.objects.all().filter(status=0,id__gt=user.score)
-
+            sent = Sentence.objects.all().filter(status=0,id__gt=user.score,lock=False)
+        
         if len(sent)==0 :
             n=0
             # print(words,sent.tags,range)
@@ -191,19 +204,23 @@ def anno(request):
             context['form']=None
             request.session['qid']=None
             html_template = loader.get_template('home/' + load_template)
-            print(html_template)
+            # print(html_template)
             return HttpResponse(html_template.render(context, request))
         sent=sent.first()
+        sent.lock=True
+        sent.save()
+        timer = threading.Timer(5000,sent.unlock)
+        timer.start()
         words = list(sent.words.strip().split(" "))
         n=len(words)
         request.session['qid']=sent.id
 
-        print(words,sent.tags,range)
+        # print(words,sent.tags,range)
         context['sentence']=sent
         context['words']=words
         context['tags']=sent.tags.strip()
         context['n']=range(n)
-        print(range(n))
+        # print(range(n))
         context['utag']=user.tag
         # user.score=sent.id
         # user.save()
@@ -223,22 +240,36 @@ def anno(request):
     html_template = loader.get_template('home/' + load_template)
     print(html_template)
     return HttpResponse(html_template.render(context, request))
-
-    
+   
 @login_required(login_url="/login/")
 def ask_us(request):
     msg=""
-    form = ExcelUploadForm()
+    
     if request.method =='POST':
         form = ExcelUploadForm(request.POST, request.FILES)
         # return HttpResponse.''.render(context, request))
         print('hi')
         if form.is_valid():
+            d=request.POST['datasetname']
+            d=str(d)
+            d=d.strip()
             # read the uploaded Excel file using pandas
-            df = pd.read_excel(request.FILES['excel_file'])
-            print(df)
-            
+            t=DataSets.objects.all().filter(datasetname=d)
+            if len(t)!=0:
+                msg="dataset name alredy used "
 
+            else:
+                df = pd.read_excel(request.FILES['excel_file'])
+                print(request.POST['datasetname'])
+                uid= request.session['user_id']
+                user = User.objects.filter(id=uid)[0]
+                t=DataSets(datasetname=d,duser=user)
+                for index, row in df.iterrows():
+                    sent=Sentence(words=row['sentence'],tags=row['tags'])
+                    sent.save()
+
+                t.save()
+    form = ExcelUploadForm()
     context = {}
     
     print('FORM ASKED ---------------')
@@ -277,9 +308,6 @@ def Proview(request):
             user.about= inp_about
             user.save()
     return HttpResponse(render(request,'home/profile.html',context))
-
-
-# def annotate(request):
 
 
 @login_required(login_url="/login/")
@@ -398,17 +426,6 @@ def confirm(request):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 @login_required(login_url="/login/")
 def verify(request):
     print(request)
@@ -447,7 +464,8 @@ def verify(request):
             sent.meaning=ans
             sent.status=2
             sent.save()
-           
+            ver=Verified(vsent=sent,vuser=user)
+            ver.save()
         
     load_template = request.path.split('/')[-1]
 
@@ -491,6 +509,7 @@ def verify(request):
         print(ans)
         ans=list(ans.strip().split())
         context['ans']=ans
+        print(ans)
 
         context['ten']=range(10)
         wordsh=[]
@@ -501,7 +520,7 @@ def verify(request):
         context['wordsh']=wordsh
 
 
-        
+        # print(wordsh)
 
     html_template = loader.get_template('home/' + load_template)
     print(html_template)
@@ -516,15 +535,20 @@ def verify(request):
     #     html_template = loader.get_template('home/page-500.html')
     #     return HttpResponse(html_template.render(context, request))
 
-
-
-
-
-
-
-
-
-
+# def user_list(request):
+#     users = User.objects.all()
+#     if request.method == 'POST':
+#         form = TaskChangeForm(request.POST)
+#         if form.is_valid():
+#             user_id = form.cleaned_data['user_id']
+#             task = form.cleaned_data['task']
+#             user = User.objects.get(pk=user_id)
+#             user.task = task
+#             user.save()
+#             return redirect('user_list')
+#     else:
+#         form = TaskChangeForm()
+#     return HttpResponse(render(request,'home/user_list.html',{'users': users, 'form': form}))
 
 
 

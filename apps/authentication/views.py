@@ -4,11 +4,12 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 # Create your views here.
+from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login,logout
 from .forms import LoginForm,CreateUserForm
 from .models import  User
-from apps.home.models import Sentence,Assigned
+from apps.home.models import Sentence
 from django.db.models import Max
 def login_view(request):
 
@@ -19,6 +20,7 @@ def login_view(request):
     if request.method == "POST":
 
         if form.is_valid():
+            print('hi')
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
            
@@ -27,10 +29,8 @@ def login_view(request):
             print(username, password)
             if user is not None:
                 login(request, user)
-                if user.lowerb == user.upperb:
-                    user.lowerb=Assigned.objects.aggregate(Max('upper'))['upper__max']
-                    user.upperb= min(user.lower+50,Sentence.objects.aggregate(Max('id'))['id__max'])
-                    user.save()
+                request.session['start_time'] = datetime.now().timestamp()
+                
                 request.session['user_id'] = user.id
                 return redirect("/")
                 
@@ -48,21 +48,26 @@ def register_user(request):
     success=False
     form = CreateUserForm()
     if request.method == 'POST':
+        print('hi')
         userna = request.POST.get('username')
         if len(User.objects.all().filter(username=userna)) > 0:
-            
+            print('hi-')
             return render(request, "accounts/register.html", {"form": form,'msg':'username used '})
         
         password = request.POST.get('password1')
         email = request.POST.get('email')
         password2=request.POST.get('password2')
         if password!=password2:
-             return render(request, "accounts/register.html", {"form": form,'msg':"password doesn't match"})
+            print('hi-')
+            return render(request, "accounts/register.html", {"form": form,'msg':"password doesn't match"})
 
-        response = CreateUserForm(request.POST)
-        if response.is_valid():
-            user = User.objects.create_user(username=userna,password=password,email=email)
-            user.save()
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            print('hi')
+            form.save()
+            username = form.cleaned_data.get("username")
+            raw_password = form.cleaned_data.get("password1")
+            user = authenticate(username=username, password=raw_password)
             
             msg = 'User created - please <a href="/login">login</a>.'
             success = True

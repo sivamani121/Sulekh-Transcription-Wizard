@@ -27,14 +27,28 @@
     
     <tr>
       <th scope="row">
-        Tags
+        <label for="myInput">Enter dataset name :</label>
+        
+        
       </th>
       <td >
-        {{ form }}
+        {{ form.datasetname }}
+        
       </td>
       
     </tr>
-   
+    <tr>
+      <th scope="row">
+        <label for="myInput">Choose file :</label>
+        
+        
+      </th>
+      <td >
+        
+        {{ form.excel_file }}
+      </td>
+      
+    </tr>
   </tbody>
 
 </table>
