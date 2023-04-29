@@ -1,0 +1,142 @@
+{% extends 'layouts/base.html' %} {% block title %} Dashboard 
+{% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<style>
+    .table-responsive {
+      max-height: 78vh; /* set the maximum height of the container */
+      overflow-y: scroll; /* enable vertical scrolling */
+    }
+    
+    
+</style>
+{% endblock stylesheets %} {% block content %} {% load humanize %}
+
+<!-- Header -->
+<div class="header bg-primary pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        {% comment %} <form class="navbar-search navbar-search-light form-inline mr-sm-3" id="navbar-search-main" method="GET" action="{% url 'user_modify' %}">
+            <div class="form-group mb-0">
+              <div class="input-group input-group-alternative input-group-merge">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="fas fa-search"></i></span>
+                </div>
+                <input class="form-control" placeholder="Search" type="text" name="keywords">
+              </div>
+            </div>
+            <button type="button" class="close" data-action="search-close" data-target="#navbar-search-main" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </form> {% endcomment %}
+          
+      </div>
+      <!-- Card stats -->
+      <div class="row" style="gap: 10%">
+        
+        
+
+        
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--6">
+  <div class="row"></div>
+  <div class="row">
+    <div class="col-xl-12" style="height: 120%">
+      <form method="POST" action="{% url 'change_user' user.id %}">
+        {% csrf_token %}
+        
+      <div class="card">
+        <div class="card-header border-0">
+          <div class="row align-items-center">
+            
+            
+          </div>
+        </div>
+        
+        <div class="table-responsive">
+          <!-- Projects table -->
+          <table class="table align-items-center table-flush">
+            
+            <tbody>
+              
+              <tr>
+                
+                <th> User id </th>
+                <td>{{ user.id }}</td>
+              </tr>
+              <tr>
+                
+                <th> User name </th>
+                <td>{{ user.username }}</td>
+              </tr>
+              <tr>
+                
+                <th>Number of sentences annotated </th>
+                <td>{{ ann }}</td>
+              </tr>
+              <tr>
+                
+                <th>Number of sentences verified </th>
+                <td>{{ ver }}</td>
+              </tr>
+              <tr>
+               
+                <th>Number of questions Finalized</th>
+                <td>{{ con }}</td>
+              </tr>
+              <tr>
+               
+                <th>Total score </th>
+                <td>{{ scr }}</td>
+              </tr>
+              <tr>
+               
+                <th>User tag </th>
+                <td><input type="number" id="quantity" name="quantity" min="1" max="100" value ={{ user.tag }}></td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+        
+      </div>
+    </div>
+    <div class="text-right">
+      <button class="btn btn-primary" type="submit" style="item-align:right;">save</button></span></div>
+  </form>
+    </div>
+  </div>
+
+  {% include "includes/footer.html" %}
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}
+
+<script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
+<script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
+<script>
+  window.addEventListener("beforeunload", function (event) {
+    // Send the logout request here
+    // For example, using fetch:
+    fetch("logout/", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "X-CSRFToken": csrfToken
+      }
+    });
+  });
+  
+</script>
+
+
+{% endblock javascripts %}

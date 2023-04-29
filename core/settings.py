@@ -79,7 +79,10 @@ DATABASES = {
         'NAME': 'epics',
         'USER':'postgres',
         'PASSWORD':'#@12sivasiva',
-        'HOST':'localhost'
+        'HOST':'localhost',
+        'OPTIONS': {
+            'options': '-c statement_timeout=20000' # Set the session expiration policy to 30 minutes
+        }
         #  'ENGINE': 'django.db.backends.mysql',
         # 'NAME': 'epics',
         # 'USER': 'root',
@@ -140,3 +143,5 @@ AUTH_USER_MODEL = 'authentication.User'
 # 'all_applications': True,
 # 'graph_models': True,
 # }
+
+SESSION_COOKIE_AGE = 1200 # in seconds (30 minutes)

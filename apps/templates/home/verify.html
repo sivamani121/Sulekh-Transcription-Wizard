@@ -44,7 +44,7 @@
           <div class="card-header border-0">
             <div class="row">
               <div class="my-sent col-sm-12 col-md-4 col-lg-2">
-                <h3 class=" mb-0 sent-txt">word table </h3>
+                <h3 class=" mb-0 sent-txt">sentence id {{ sentence.id }} </h3>
               </div>
             
             <div class="my-sent col-sm-12 col-md-8 col-lg-10">
@@ -112,7 +112,7 @@
                         {% if marks|index_filter:i == 11 %} 
                         <script>
                             document.getElementById("id_{{i}}").value = "{{ ans|index_filter:i }}";
-                            alert(document.getElementById("id_{{i}}").value);
+                            
                         </script>
                         {% endif %}
                     </div>
@@ -200,7 +200,7 @@
   const skipbtn = document.querySelector('#skipper');
   function skipForm() {
     skipbtn.value='1';
-    alert('are u sure ?');
+  
     
     form.submit()
   }

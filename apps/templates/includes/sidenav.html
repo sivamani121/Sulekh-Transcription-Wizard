@@ -17,6 +17,14 @@
               <span class="nav-link-text">Dashboard</span>
             </a>
           </li>
+          {% if request.user.tag > 2 %}
+          <li class="nav-item">
+            <a class="nav-link {% if 'tables' in segment %} active {% endif %}" href="/user_modify.html">
+              <i class="ni ni-bullet-list-67 text-default"></i>
+              <span class="nav-link-text">Assign roles</span>
+            </a>
+          </li>
+          {% endif %}
           {% if request.user.tag > 1 %}
           <li class="nav-item">
             <a class="nav-link {% if 'confirm' in segment %} active {% endif %}" href="/confirm.html">
@@ -51,13 +59,8 @@
           <li class="nav-item">
             <a class="nav-link {% if 'profile' in segment %} active {% endif %}" href="/profile.html">
               <i class="ni ni-single-02 text-yellow"></i>
+              
               <span class="nav-link-text">Profile</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link {% if 'tables' in segment %} active {% endif %}" href="/tables.html">
-              <i class="ni ni-bullet-list-67 text-default"></i>
-              <span class="nav-link-text">Learn</span>
             </a>
           </li>
           

@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="canonical" href="https://appseed.us/admin-dashboards/django-dashboard-argon">
-  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <title>
     sulekh.com - {% block title %} Admin Panel {% endblock %} 
    </title>
@@ -28,6 +28,16 @@
 
   <!-- Specific CSS goes HERE -->
   {% block stylesheets %}{% endblock stylesheets %}
+
+  <script>
+    $$(window).on('beforeunload', function() {
+      setTimeout(function() {
+        // delete the session cookie
+        document.cookie = 'sessionid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      }, 600000); // 5000 milliseconds = 5 seconds
+    });
+    
+  </script>
 
 </head>
 

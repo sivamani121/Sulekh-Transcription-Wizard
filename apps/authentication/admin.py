@@ -12,7 +12,7 @@ from .models import User
 # Register your models here.
 class UserAdmin(UserAdmin):
     list_display=('id','username','tag')
-    list_display_links=('id',)
+    # list_display_links=('id',)
     list_editable=('tag',)
     list_filter=('tag',)
     search_fields=('id',)
