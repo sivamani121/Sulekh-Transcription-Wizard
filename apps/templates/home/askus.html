@@ -101,27 +101,17 @@
             <tr>
               
               <td>
-                {{ i.sentence.words }}
+                {{ i.datasetname }}
               </td>
               <td>
 
-                {{ i.sentence.meaning }}
+                {{ i.lower }}
               </td>
               <td>
-                {% if i.sentence.status == 0 %}
-                Yet to be answered
-                {% elif i.sentence.status == 1 %}
-                  Annotated
-                {% elif i.sentence.status == 2%}
-                Verified
-                {% else %}
-                Confirmed 
-                {% endif %}
+                {{ i.upper }}
 
               </td>
-              <td>
-                {{ i.sentence.updatedate | timesince }}
-              </td>
+             
             </tr>
             {% endfor %}
           </tbody>

@@ -61,8 +61,11 @@ def index(request):
         if i.sentno.status == 1:
             ann += 1
         elif i.sentno.status == 2:
-            con += 1
+            ver += 1
+            ann += 1
         elif i.sentno.status == 3:
+            con += 1
+            ann += 1
             ver += 1
     scr = ann+2*ver+3*con
     
@@ -271,7 +274,7 @@ def ask_us(request):
                 for index, row in df.iterrows():
                     sent = Sentence(words=row['sentence'], tags=row['tags'])
                     sent.save()
-
+                msg="dataset added successfully"
                 t.save()
     form = ExcelUploadForm()
     context = {}
@@ -280,7 +283,10 @@ def ask_us(request):
 
     context['form'] = form
     context['msg'] = msg
-    context['datasets']=DataSets.objects.filter(duser=User.objects.filter(id=uid)[0])
+    uid = request.session['user_id']
+    dt=DataSets.objects.filter(duser=User.objects.filter(id=uid)[0])
+    context['datasets']=dt
+    print(dt)
     queries = None
     user = User.objects.filter(id=request.session['user_id'])[0]
     queries = sent_req.objects.filter(user=user)
@@ -414,7 +420,8 @@ def confirm(request):
 
         context['wordsh'] = wordsh
         marks = []
-        for i in range(len(ans)):
+        print(wordsh,"-------------------------------------------------",ans)
+        for i in range(len(wordsh)):
             t = 11
             for j in range(10):
                 if wordsh[i][j] == ans[i]:
@@ -526,6 +533,7 @@ def verify(request):
         for i in words:
             out = e.translit_word(i, topk=10)
             wordsh.append(list(out.values())[0])
+            
         context['wordsh'] = wordsh
         marks = []
         for i in range(len(wordsh)):
@@ -567,7 +575,7 @@ def verify(request):
 
 
 def search(request):
-    sent_list = Sentence.objects.order_by('id').filter(status=2)
+    sent_list = Sentence.objects.order_by('id').filter(status=3)
     if 'keywords' in request.GET:
         keywords = request.GET.get('keywords')
         print(keywords)
@@ -601,8 +609,8 @@ def change_user(request, user_id):
         response = request.POST
         q=response.get('quantity')
         print(q+"-------------------")
-        print(ch_user)
         ch_user = User.objects.all().filter(id=user_id).first()
+        print(ch_user)
         ch_user.tag=q
         ch_user.save()
 
@@ -616,9 +624,9 @@ def change_user(request, user_id):
        
         if i.sentno.status == 1:
             ann += 1
-        elif i.sentno.status == 2:
-            con += 1
         elif i.sentno.status == 3:
+            con += 1
+        elif i.sentno.status == 2:
             ver += 1
     scr = ann+2*ver+3*con
     context = {}
