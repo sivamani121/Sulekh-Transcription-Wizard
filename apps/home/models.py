@@ -15,7 +15,7 @@ class Sentence(models.Model):
   tags = models.CharField(max_length=999)
   meaning = models.CharField(max_length=999,blank=True)
   status =models.IntegerField(default=0)
-  lock= models.BooleanField(default=False)
+  lock= models.IntegerField(default=0)
   def __str__(self):
     return self.words
   def unlock(self):

@@ -2,7 +2,7 @@
 """
 Copyright (c) 2019 - present AppSeed.us
 """
-
+from django.db.models import Q
 from django import template
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
@@ -57,7 +57,7 @@ def index(request):
     con = 0
     ver = 0
     for i in n:
-       
+
         if i.sentno.status == 1:
             ann += 1
         elif i.sentno.status == 2:
@@ -68,8 +68,7 @@ def index(request):
             ann += 1
             ver += 1
     scr = ann+2*ver+3*con
-    
-    
+
     sents = Answered.objects.order_by('-updatedate')
     if len(sents) > 6:
         sents = sents[0:6]
@@ -159,6 +158,12 @@ def anno(request):
         if response.get('skipped') == '1':
             user.score = sent.id
             user.save()
+            try:
+                sent = Sentence.objects.all().filter(id=request.session['qid']).first()
+                sent.lock = 0
+                sent.save()
+            except:
+                print("")
         else:
             words = sent.words
             words = list(words.strip().split())
@@ -188,20 +193,22 @@ def anno(request):
             newans.save()
             annoted = Annotated(asent=sent, auser=user)
             annoted.save()
-        sent.lock = False
+        sent.lock = 0
         sent.save()
 
     load_template = request.path.split('/')[-1]
 
     context['segment'] = load_template
-
+    
     if(user.tag >= 0):
-        sent = Sentence.objects.all().filter(status=0, id__gt=user.score, lock=False)
+        sent = Sentence.objects.all().filter(
+            Q(lock=0) | Q(lock=user.id), status=0, id__gt=user.score)
         # print(sent)
         if len(sent) == 0:
             user.score = 0
             user.save
-            sent = Sentence.objects.all().filter(status=0, id__gt=user.score, lock=False)
+            sent = Sentence.objects.all().filter(Q(lock=0) | Q(
+                lock=user.id), status=0, id__gt=user.scorye)
 
         if len(sent) == 0:
             n = 0
@@ -217,10 +224,9 @@ def anno(request):
             # print(html_template)
             return HttpResponse(html_template.render(context, request))
         sent = sent.first()
-        sent.lock = True
+        sent.lock = user.id
         sent.save()
-        timer = threading.Timer(5000, sent.unlock)
-        timer.start()
+
         words = list(sent.words.strip().split(" "))
         n = len(words)
         request.session['qid'] = sent.id
@@ -274,7 +280,7 @@ def ask_us(request):
                 for index, row in df.iterrows():
                     sent = Sentence(words=row['sentence'], tags=row['tags'])
                     sent.save()
-                msg="dataset added successfully"
+                msg = "dataset added successfully"
                 t.save()
     form = ExcelUploadForm()
     context = {}
@@ -284,8 +290,8 @@ def ask_us(request):
     context['form'] = form
     context['msg'] = msg
     uid = request.session['user_id']
-    dt=DataSets.objects.filter(duser=User.objects.filter(id=uid)[0])
-    context['datasets']=dt
+    dt = DataSets.objects.filter(duser=User.objects.filter(id=uid)[0])
+    context['datasets'] = dt
     print(dt)
     queries = None
     user = User.objects.filter(id=request.session['user_id'])[0]
@@ -340,6 +346,12 @@ def confirm(request):
         if response.get('skipped') == '1':
             user.score = sent.id
             user.save()
+            try:
+                sent = Sentence.objects.all().filter(id=request.session['qid']).first()
+                sent.lock = 0
+                sent.save()
+            except:
+                print("")
         else:
             print(request.session['qid'])
             print(sent.id)
@@ -368,6 +380,8 @@ def confirm(request):
             newans.save()
             conf = Confirmed(csent=sent, cuser=newans.userid)
             conf.save()
+        sent.lock = 0
+        sent.save()
     load_template = request.path.split('/')[-1]
 
     context['segment'] = load_template
@@ -375,12 +389,14 @@ def confirm(request):
     user = User.objects.all().filter(id=uid).first()
 
     if(user.tag >= 0):
-        sent = Sentence.objects.all().filter(status=2, id__gt=user.score)
+        sent = Sentence.objects.all().filter(
+            Q(lock=0) | Q(lock=user.id), status=2, id__gt=user.score)
         print(sent)
         if len(sent) == 0:
             user.score = 0
             user.save
-            sent = Sentence.objects.all().filter(status=2, id__gt=user.score)
+            sent = Sentence.objects.all().filter(
+                Q(lock=0) | Q(lock=user.id), status=2, id__gt=user.score)
         if len(sent) == 0:
             n = 0
             # print(words,sent.tags,range)
@@ -396,6 +412,8 @@ def confirm(request):
             print(html_template)
             return HttpResponse(html_template.render(context, request))
         sent = sent.first()
+        sent.lock = user.id
+        sent.save()
         words = list(sent.words.strip().split(" "))
         n = len(words)
         request.session['qid'] = sent.id
@@ -420,7 +438,7 @@ def confirm(request):
 
         context['wordsh'] = wordsh
         marks = []
-        print(wordsh,"-------------------------------------------------",ans)
+        print(wordsh, "-------------------------------------------------", ans)
         for i in range(len(wordsh)):
             t = 11
             for j in range(10):
@@ -462,6 +480,12 @@ def verify(request):
         if response.get('skipped') == '1':
             user.score = sent.id
             user.save()
+            try:
+                sent = Sentence.objects.all().filter(id=request.session['qid']).first()
+                sent.lock = 0
+                sent.save()
+            except:
+                print("")
         else:
             print(request.session['qid'])
             print(sent.id)
@@ -485,18 +509,21 @@ def verify(request):
             sent.save()
             ver = Verified(vsent=sent, vuser=user)
             ver.save()
-
+        sent.lock = 0
+        sent.save()
     load_template = request.path.split('/')[-1]
 
     context['segment'] = load_template
 
     if(user.tag >= 0):
-        sent = Sentence.objects.all().filter(status=1, id__gt=user.score)
+        sent = Sentence.objects.all().filter(
+            Q(lock=0) | Q(lock=user.id), status=1, id__gt=user.score)
         print(sent)
         if len(sent) == 0:
             user.score = 0
             user.save
-            sent = Sentence.objects.all().filter(status=1, id__gt=user.score)
+            sent = Sentence.objects.all().filter(
+                Q(lock=0) | Q(lock=user.id), status=1, id__gt=user.score)
         if len(sent) == 0:
             n = 0
             # print(words,sent.tags,range)
@@ -512,6 +539,9 @@ def verify(request):
             print(html_template)
             return HttpResponse(html_template.render(context, request))
         sent = sent.first()
+        sent.lock = user.id
+        sent.save()
+
         words = list(sent.words.strip().split(" "))
         n = len(words)
         request.session['qid'] = sent.id
@@ -533,7 +563,7 @@ def verify(request):
         for i in words:
             out = e.translit_word(i, topk=10)
             wordsh.append(list(out.values())[0])
-            
+
         context['wordsh'] = wordsh
         marks = []
         for i in range(len(wordsh)):
@@ -607,11 +637,11 @@ def user_modify(request):
 def change_user(request, user_id):
     if request.method == 'POST':
         response = request.POST
-        q=response.get('quantity')
+        q = response.get('quantity')
         print(q+"-------------------")
         ch_user = User.objects.all().filter(id=user_id).first()
         print(ch_user)
-        ch_user.tag=q
+        ch_user.tag = q
         ch_user.save()
 
     ch_user = User.objects.all().filter(id=user_id).first()
@@ -621,7 +651,7 @@ def change_user(request, user_id):
     con = 0
     ver = 0
     for i in n:
-       
+
         if i.sentno.status == 1:
             ann += 1
         elif i.sentno.status == 3:
